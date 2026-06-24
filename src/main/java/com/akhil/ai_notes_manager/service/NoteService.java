@@ -1,18 +1,19 @@
 package com.akhil.ai_notes_manager.service;
-import java.util.*;
-import com.akhil.ai_notes_manager.entity.Note;
-import com.akhil.ai_notes_manager.repository.NoteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.akhil.ai_notes_manager.dto.NoteDetailDTO;
 import com.akhil.ai_notes_manager.dto.NoteResponseDTO;
 import com.akhil.ai_notes_manager.dto.PaginatedNotesResponseDTO;
-
+import com.akhil.ai_notes_manager.entity.Note;
+import com.akhil.ai_notes_manager.repository.NoteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NoteService {
@@ -27,6 +28,10 @@ public class NoteService {
     public Note saveNote(Note note){
         return noteRepository.save(note);
     }
+    public Optional<Note> getNoteEntityById(Long id){
+        return noteRepository.findById(id);
+    }
+
     public List<NoteResponseDTO> getAllNotes(){
         return noteRepository.findAll().stream().
                 map(note->new NoteResponseDTO(
@@ -42,7 +47,8 @@ public class NoteService {
                 note.getTitle(),
                 note.getContent(),
                 note.getCreatedAt(),
-                note.getUpdatedAt()
+                note.getUpdatedAt(),
+                    note.getAiSummary()
             ));
     }
     public void deleteNoteById(Long id){

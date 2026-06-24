@@ -20,4 +20,14 @@ public class GlobalExceptionHandler {
         );
         return errors;
     }
+
+    @ExceptionHandler(AIServiceException.class)
+    public Map<String,String> handleAIException(AIServiceException exe){
+        Map<String,String> error=new HashMap<>();
+        error.put("Error",exe.getMessage());
+        return error;
+    }
+
+
+
 }

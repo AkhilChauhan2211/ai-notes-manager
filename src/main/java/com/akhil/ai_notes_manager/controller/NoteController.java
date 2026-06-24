@@ -4,6 +4,7 @@ import com.akhil.ai_notes_manager.dto.NoteDetailDTO;
 import com.akhil.ai_notes_manager.dto.NoteResponseDTO;
 import com.akhil.ai_notes_manager.dto.PaginatedNotesResponseDTO;
 import com.akhil.ai_notes_manager.entity.Note;
+import com.akhil.ai_notes_manager.service.AIService;
 
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ import jakarta.validation.Valid;
 public class NoteController {
     @Autowired
     private NoteService noteService;
+
+    @Autowired
+    private AIService aiService;
 
     @PostMapping
     @Operation(summary = "Create a new note")
@@ -83,4 +87,19 @@ public class NoteController {
     ){
         return noteService.getNotesPaginated(page, size,sort,direction);
     }
+
+    @PostMapping("/{id}/generate-summary")
+    @Operation(summary="Generate AI summmary for a note")
+    public ResponseEntity<Note> generateSummary(@PathVariable Long id){
+        Optional<Note> optionalNote=noteService.getNoteEntityById(id);
+        if(optionalNote.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        Note note=optionalNote.get();
+        String summary= aiService.generateSummary(note.getContent());
+        note.setAiSummary(summary);
+        Note savedNote=noteService.saveNote(note);
+        return ResponseEntity.ok(savedNote);
+    }
+
 }

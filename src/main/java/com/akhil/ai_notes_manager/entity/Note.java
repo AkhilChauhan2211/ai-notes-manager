@@ -18,11 +18,13 @@ public class Note {
     private String title;
 
     @NotBlank(message="Content cannot be empty")
-    @Column(length=5000)
+    @Column(columnDefinition="TEXT")
     private String content;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @Column(columnDefinition ="TEXT")
     private String aiSummary;
 
     @PrePersist
